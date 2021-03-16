@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% block content %}
+{% if results|length == 1 %}
+<div class="mx-3 mt-3">
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">{{ results[0].suburb }} {{ results[0].short_state }} {{ results[0].postcode
+                    }} {{ results[0].country }}</th>
+                <th scope="col">$</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Cost per Pallet Space</td>
+                <td>{{ results[0].cost_per_pallet }}</td>
+            </tr>
+            <tr>
+                <td>Cost per 1 x 1000L</td>
+                <td>{{ results[0].cost_per_1_1000 }}</td>
+            </tr>
+            <tr>
+                <td>Cost per 2 x 1000L</td>
+                <td>{{ results[0].cost_per_2_1000 }}</td>
+            </tr>
+            <tr>
+                <td>Cost per 1 x 1500L</td>
+                <td>{{ results[0].cost_per_1_1500 }}</td>
+            </tr>
+            <tr>
+                <td>Cost per 1 x 2000L</td>
+                <td>{{ results[0].cost_per_1_2000 }}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<div class="card mx-3">
+    <div class="card-header">
+        Notes
+    </div>
+    <div class="card-body">
+        {% if results[0].note %}
+        {{ results[0].note }}
+        {% else %}
+        <div class="alert alert-info mb-0">There are no notes attached to this desitnation</div>
+        {% endif %}
+    </div>
+</div>
+
+<div style="font-style: italic; text-align: center;" class="mt-3 mx-3">
+    <p>All rates exclude variable fuel levy (unless noted otherwise), GST and any other Government charges that may
+        apply.</p>
+    <p>The quotation is based on information supplied by you, however the actual freight charges may vary if the actual
+        consignment details are not the same as shown in this quote.</p>
+    <p>Unless otherwise stated in this quote, additional charges may be applied for the use of cranes, tailgate or other
+        specialised equipment or where redelivery is required and/or delays occur.</p>
+    <p>If You engage GF Venture Pty Ltd to provide Services to You,
+        You are deemed to have agreed to be bound by Our Standard Terms and Conditions.</p>
+    <b><u>Insurance:</u></b> Generate Freight are not common carriers. Insurance is not offered or included in the
+    quotation.
+    We do not accept liability for damage.
+    We recommend that you discuss cartage & storage conditions with your own insurer.
+</div>
+
+{% else %}
+<div style="max-width: 450px" class="card mx-auto mt-3">
+    <h5 class="card-header">Postcode Lookup</h5>
+    <div class="card-body">
+        Multiple suburbs found matching postcode:<br><br>
+        {% for result in results %}
+        <a href="/result?id={{ result.id }}">{{ result.suburb }}</a><br>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+{% endblock %}

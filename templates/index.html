@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block content %}
+<div style="max-width: 450px" class="card mx-auto mx-3 mt-3">
+    <h5 class="card-header">Postcode Lookup</h5>
+    <div class="card-body">
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        {{ messages[0] }}
+        {% endif %}
+        {% endwith %}
+        <form method="GET" action="/result">
+            <div class="form-group">
+                <label for="postcode">Postcode</label>
+                <input type="number" class="form-control" id="postcode" name="postcode" aria-describedby="emailHelp"
+                    maxlength="4" minlength="4">
+            </div>
+            <div class="d-flex justify-content-end">
+                <button type="submit" class="btn btn-primary">Search</button>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- <div style="max-width: 450px" class="card mx-auto mx-3 mt-3">
+    <h5 class="card-header">Suburb Lookup</h5>
+    <div class="card-body">
+        <form method="GET" action="/result">
+            <div class="form-group">
+                <label for="suburb">Suburb</label>
+                <input type="text" class="form-control" id="suburb" name="suburb">
+            </div>
+            <div class="d-flex justify-content-end">
+                <button type="submit" class="btn btn-primary">Search</button>
+            </div>
+        </form>
+    </div>
+</div> -->
+{% endblock %}
+
+{% block end_body %}
+<script src="http://code.jquery.com/ui/1.10.2/jquery-ui.js"></script>
+<script>
+    $(function () {
+        $.ajax({
+            url: '{{ url_for("autocomplete") }}'
+        }).done(function (data) {
+            $('#postcode').autocomplete({
+                source: data,
+                minLength: 2
+            });
+        });
+    });
+</script>
+{% endblock %}
