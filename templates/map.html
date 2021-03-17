@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block head %}
+<!-- Mapbox GL JS -->
+<script src='https://api.mapbox.com/mapbox-gl-js/v2.1.1/mapbox-gl.js'></script>
+<link href='https://api.mapbox.com/mapbox-gl-js/v2.1.1/mapbox-gl.css' rel='stylesheet' />
+{% endblock %}
+{% block content %}
+<div id='map' style='position: absolute; top: 59px; bottom: 0; width: 100%;'></div>
+{% endblock %}
+{% block end_body %}
+<!-- Mapbox Geocoder -->
+<script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.5.1/mapbox-gl-geocoder.min.js"></script>
+<link rel="stylesheet"
+    href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.5.1/mapbox-gl-geocoder.css" type="text/css">
+<!-- Promise polyfill script required to use Mapbox GL Geocoder in IE 11 -->
+<script src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.auto.min.js"></script>
+
+<script>
+    mapboxgl.accessToken = 'pk.eyJ1IjoiZmxleGN1YmUiLCJhIjoiY2tsaDhzaXczMGpsZjJucXAwaDZrdjh6MSJ9.Rofoq1eHRgo-nj2T6m0oYQ';
+    var map = new mapboxgl.Map({
+        container: 'map',
+        style: 'mapbox://styles/mapbox/streets-v11',
+        center: [144.9, -37.8], // starting position [lng, lat]
+        zoom: 9 // starting zoom
+    });
+
+    // Add geocoder to the map.
+    map.addControl(
+        new MapboxGeocoder({
+            accessToken: mapboxgl.accessToken,
+            mapboxgl: mapboxgl
+        })
+    );
+
+    // Add zoom and rotation controls to the map.
+    map.addControl(new mapboxgl.NavigationControl());
+
+    {% for location in locations %}
+    var marker = new mapboxgl.Marker({scale: 0.7})
+        .setLngLat([{{ location.lon }}, {{ location.lat }}])
+        .setPopup(new mapboxgl.Popup({closeButton: false, focusAfterOpen: false, closeOnMove: true}).setHTML('<h4>{{ location.suburb }}</h4>{{ location.short_state }} {{ location.postcode }} {{ location.country }}<br><br><a href="/result?id={{ location.id }}"><button class="btn btn-primary">Go</button></a>'))
+        .addTo(map);
+    {% endfor %}
+</script>
+{% endblock %}
