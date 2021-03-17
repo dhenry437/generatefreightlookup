@@ -7,20 +7,22 @@ import uuid
 import os
 import string
 
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
+# sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
 basedir = os.path.abspath(os.path.dirname(__file__))
 
-# EB looks for an 'application' callable by default.
-application = Flask(__name__)
-application.secret_key = 'k8ozj4h9xCBcsP$e'
+app = Flask(__name__)
+app.secret_key = 'k8ozj4h9xCBcsP$e'
 
-application.config['FLASK_HTPASSWD_PATH'] = '.htpasswd'
-application.config['FLASK_AUTH_ALL'] = True
-htpasswd = HtPasswdAuth(application)
+app.config['FLASK_HTPASSWD_PATH'] = '.htpasswd'
+app.config['FLASK_AUTH_ALL'] = True
+htpasswd = HtPasswdAuth(app)
 
-application.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + \
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + \
     os.path.join(basedir, 'data.db')
-application.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db = SQLAlchemy(application)
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db = SQLAlchemy(app)
 
 
 class FreightLine(db.Model):
@@ -42,14 +44,14 @@ class FreightLine(db.Model):
 # add a rule for the index page.
 
 
-@application.route('/')
+@app.route('/')
 def index():
     return render_template('index.html')
 
 # groups = {'descriptor':[result, result, result, ...], 'descriptor':[result, result, result, ...], 'descriptor':[result, result, result, ...], ...}
 
 
-@application.route('/list')
+@app.route('/list')
 def browse():
     group_by = request.args.get('group_by')
     mydict = {}
@@ -84,7 +86,7 @@ def browse():
 
     return render_template('list.html', results=mydict)
 
-@application.route('/result', methods = ['get'])
+@app.route('/result', methods = ['get'])
 def postcode_lookup():
     id = request.args.get('id')
     if id:
@@ -99,7 +101,7 @@ def postcode_lookup():
 
     return render_template('result.html', results=results)
 
-@application.route('/autocomplete', methods=['GET'])
+@app.route('/autocomplete', methods=['GET'])
 def autocomplete():
     type = request.args.get('type')
 
@@ -113,7 +115,7 @@ def autocomplete():
 if __name__ == "__main__":
     db.create_all()
 
-    application.debug = True
-    application.host ='0.0.0.0'
-    application.port = 8080
-    application.run()
+    app.debug = True
+    app.host ='0.0.0.0'
+    app.port = 8080
+    app.run()
