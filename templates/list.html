@@ -4,33 +4,74 @@
     <div class="card-header">
         <ul class="nav nav-pills card-header-pills">
             <li class="nav-item">
-                <a class="nav-link {% if request.args.get('group_by') == 'alphabetical' %}active{% endif %}" href="/list?group_by=alphabetical">Alphabetical</a>
+                <a class="nav-link {% if request.args.get('group_by') == 'alphabetical' %}active{% endif %}"
+                    href="/list?group_by=alphabetical">Alphabetical</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link {% if request.args.get('group_by') == 'state' %}active{% endif %}" href="/list?group_by=state">State</a>
+                <a class="nav-link {% if request.args.get('group_by') == 'state' %}active{% endif %}"
+                    href="/list?group_by=state">State</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link {% if request.args.get('group_by') == 'postcode' %}active{% endif %}" href="/list?group_by=postcode">Postcode</a>
+                <a class="nav-link {% if request.args.get('group_by') == 'postcode' %}active{% endif %}"
+                    href="/list?group_by=postcode">Postcode</a>
             </li>
         </ul>
     </div>
     <div class="card-body">
         {% if request.args.get('group_by') %}
-            {% for descriptor in results %}
-                <a href="#{{ descriptor }}">{{ descriptor }}</a>
-            {% endfor %}
-            <br>
-            <br>
-            {% for descriptor in results %}
-                <a id="{{ descriptor }}"><h4>{{ descriptor }}</h4></a>
-                {% for result in results[descriptor] %}
-                    <a href="/result?id={{ result.id }}">{{ result.suburb }} - {{ result.postcode }}</a><br>
-                {% endfor %}
-                <br>
-            {% endfor %}
+        {% for descriptor in results %}
+        <a href="#{{ descriptor }}">{{ descriptor }}</a>
+        {% endfor %}
+        <br>
+        <br>
+        {% for descriptor in results %}
+        <a id="{{ descriptor }}">
+            <h4>{{ descriptor }}</h4>
+        </a>
+        {% for result in results[descriptor] %}
+        <a href="/result?id={{ result.id }}">{{ result.suburb }} - {{ result.postcode }}</a><br>
+        {% endfor %}
+        <br>
+        {% endfor %}
         {% else %}
-            <div class="alert alert-danger mb-0">Request parameter "group_by" not set</div>
+        <div class="alert alert-danger mb-0">Request parameter "group_by" not set</div>
         {% endif %}
     </div>
 </div>
+<a id="back-to-top" href="#" class="btn btn-dark btn-lg back-to-top pt-0 pb-1" role="button">
+    <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" fill="currentColor" class="bi bi-chevron-up"
+        viewBox="0 0 16 16">
+        <path fill-rule="evenodd"
+            d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z" />
+    </svg>
+</a>
+{% endblock %}
+{% block end_body %}
+<script>
+    $(document).ready(function () {
+        $(window).scroll(function () {
+            if ($(this).scrollTop() > 50) {
+                $('#back-to-top').fadeIn();
+            } else {
+                $('#back-to-top').fadeOut();
+            }
+        });
+        // scroll body to 0px on click
+        $('#back-to-top').click(function () {
+            $('body,html').animate({
+                scrollTop: 0
+            }, 400);
+            return false;
+        });
+    });
+
+    // Smooth scroll anchor links
+    $(document).on('click', 'a[href^="#"]', function (event) {
+        event.preventDefault();
+    
+        $('html, body').animate({
+            scrollTop: $($.attr(this, 'href')).offset().top
+        }, 500);
+    });
+</script>
 {% endblock %}
