@@ -15,9 +15,9 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 app = Flask(__name__)
 app.secret_key = 'k8ozj4h9xCBcsP$e'
 
-app.config['FLASK_HTPASSWD_PATH'] = '.htpasswd'
-app.config['FLASK_AUTH_ALL'] = True
-htpasswd = HtPasswdAuth(app)
+# app.config['FLASK_HTPASSWD_PATH'] = '.htpasswd'
+# app.config['FLASK_AUTH_ALL'] = True
+# htpasswd = HtPasswdAuth(app)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + \
     os.path.join(basedir, 'data.db')
