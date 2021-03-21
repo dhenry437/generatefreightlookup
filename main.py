@@ -5,10 +5,11 @@ from itertools import groupby
 from operator import attrgetter, itemgetter
 import uuid
 import os
+import sys
 import string
 
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
-# sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -40,6 +41,8 @@ class FreightLine(db.Model):
     cost_per_1_1500 = db.Column(db.Float)
     cost_per_1_2000 = db.Column(db.Float)
     note = db.Column(db.String)
+    lat = db.Column(db.Float)
+    lon = db.Column(db.Float)
 
 # add a rule for the index page.
 
@@ -101,13 +104,24 @@ def postcode_lookup():
 
     return render_template('result.html', results=results)
 
+@app.route('/map')
+def map():
+    locations = FreightLine.query.all()
+
+    return render_template('map.html', locations=locations)
+
 @app.route('/autocomplete', methods=['GET'])
 def autocomplete():
     type = request.args.get('type')
 
-    query = db.session.query(FreightLine.postcode).all()
+    if type == 'postcode':
+        query = db.session.query(FreightLine.postcode).all()
 
-    results = [result[0] for result in query]
+        results = [str(result[0]) for result in query]
+    elif type == 'suburb':
+        query = db.session.query(FreightLine.suburb).all()
+
+        results = [str(result[0]) for result in query]
 
     return jsonify(results)
 
